@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h1>Feature importance</h1><p>Which inputs the models rely on most. One-hot columns are mapped back to the original feature names.</p></div></div>
+<div id="fi-empty" hidden></div>
+<div id="fi-body">
+  <div class="callout"><i class="bi bi-lightbulb"></i><div><p><strong>Association, not causation.</strong> A high importance means the model uses a feature to separate leavers from stayers in historical data. It does not show that the factor makes anyone resign, and correlated features can share importance.</p></div></div>
+  <div class="tabs mt" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="perm">Permutation (held-out)</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="rf">Random forest</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="lr">Logistic regression</button>
+  </div>
+  <section data-panel="perm" class="card"><div class="card-head"><div><h2>Permutation importance</h2><div class="sub" id="fi-perm-sub"></div></div></div><div class="chart-box tall"><canvas id="fi-perm"></canvas></div><p class="help" style="font-size:.8rem;color:var(--text-3)">How much ROC-AUC drops on held-out employees when one feature is shuffled. Bars show the mean; whiskers in the tooltip show the standard deviation over 10 repeats.</p></section>
+  <section data-panel="rf" class="card" hidden><div class="card-head"><div><h2>Random forest importances</h2><div class="sub">Impurity-based, summed over each feature’s one-hot columns</div></div></div><div class="chart-box tall"><canvas id="fi-rf"></canvas></div></section>
+  <section data-panel="lr" class="card" hidden><div class="card-head"><div><h2>Logistic regression coefficients</h2><div class="sub">Sign shows direction; size is comparable because numeric inputs are standardised</div></div></div><div class="chart-box tall"><canvas id="fi-lr"></canvas></div>
+    <div class="callout mt"><i class="bi bi-info-circle"></i><div><p><strong>How to read this.</strong> A positive coefficient raises the log-odds of leaving. Numeric features are per +1 standard deviation; one-hot features compare that category against all others. The odds ratio (e<sup>coef</sup>) shows the multiplicative change in odds.</p></div></div>
+    <div class="table-wrap mt"><table><thead><tr><th>Feature</th><th>Coefficient</th><th>Odds ratio</th><th>Direction</th></tr></thead><tbody id="fi-lr-body"></tbody></table></div></section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/importance.js') }}"></script>{% endblock %}

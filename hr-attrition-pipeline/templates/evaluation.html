@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h1>Model evaluation</h1><p>Cross-validation compares the models on training data; the held-out test set scores only the selected model.</p></div></div>
+<div id="ev-empty" hidden></div>
+<div id="ev-body">
+  <div class="callout warn"><i class="bi bi-exclamation-triangle"></i><div><p><strong>Why accuracy can mislead.</strong> Only <span id="ev-rate">a minority</span> of employees in the training data left, so a model that always predicts “stayed” is already right most of the time yet finds nobody at risk. <span class="tip" tabindex="0" data-tip="Share of actual leavers that the model catches.">Recall</span>, <span class="tip" tabindex="0" data-tip="Harmonic mean of precision and recall.">F1</span>, <span class="tip" tabindex="0" data-tip="Average of recall on each class, so the majority class cannot dominate.">balanced accuracy</span> and <span class="tip" tabindex="0" data-tip="Area under the precision-recall curve; focuses on the minority class.">PR-AUC</span> show how well leavers are actually identified.</p></div></div>
+  <div class="grid g-kpi mt" id="ev-kpis"></div>
+  <div class="grid g-2">
+    <section class="card"><div class="card-head"><div><h2>Model comparison</h2><div class="sub">Cross-validation mean ± std (training split)</div></div></div><div id="ev-table"></div></section>
+    <section class="card"><div class="card-head"><div><h2>CV score comparison</h2><div class="sub">Mean score per metric</div></div></div><div class="chart-box"><canvas id="ev-cv"></canvas></div></section>
+    <section class="card"><div class="card-head"><div><h2>ROC curve</h2><div class="sub" id="ev-roc-sub">Held-out test set</div></div></div><div class="chart-box"><canvas id="ev-roc"></canvas></div></section>
+    <section class="card"><div class="card-head"><div><h2>Precision–recall curve</h2><div class="sub">Dashed line = no-skill baseline</div></div></div><div class="chart-box"><canvas id="ev-pr"></canvas></div></section>
+    <section class="card"><div class="card-head"><div><h2>Confusion matrix</h2><div class="sub" id="ev-cm-sub"></div></div></div><div id="ev-cm"></div></section>
+    <section class="card"><div class="card-head"><div><h2>Classification report</h2><div class="sub">Held-out test set</div></div></div><div id="ev-report"></div></section>
+  </div>
+  <section class="card mt"><div class="card-head"><div><h2>Decision-threshold trade-off</h2><div class="sub">Out-of-fold predictions on the training split — the test set is not used here</div></div></div><div class="chart-box"><canvas id="ev-sweep"></canvas></div></section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/evaluation.js') }}"></script>{% endblock %}

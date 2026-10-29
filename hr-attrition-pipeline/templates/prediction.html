@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h1>Predict attrition</h1><p>Enter an employee profile. The saved pipeline applies the same encoding used in training. Fields left empty use the typical (median / most common) training value.</p></div></div>
+<div class="callout warn" style="margin-bottom:18px"><i class="bi bi-shield-exclamation"></i><div><p><strong>Decision support only.</strong> Results are statistical estimates from aggregate historical data, not certain outcomes. Do not use them for employment, disciplinary or termination decisions about individuals.</p></div></div>
+<div id="p-empty" hidden></div>
+<div class="grid g-main" id="p-body">
+  <section class="card">
+    <div class="card-head"><div><h2>Employee profile</h2><div class="sub" id="p-model">Loading model…</div></div></div>
+    <div class="form-grid" id="p-form"></div>
+    <div style="display:flex;gap:12px;margin-top:22px;flex-wrap:wrap">
+      <button class="btn primary" id="p-submit"><span class="spin"></span><i class="bi bi-stars lbl-icon"></i> Predict attrition</button>
+      <button class="btn" id="p-reset" type="button"><i class="bi bi-arrow-counterclockwise"></i> Reset form</button>
+    </div>
+  </section>
+  <aside style="display:grid;gap:18px;align-content:start">
+    <section class="card result-card" id="p-result">
+      <div class="empty"><i class="bi bi-person-badge"></i><h3>No prediction yet</h3><p>Fill in the profile and press “Predict attrition”.</p></div>
+    </section>
+    <section class="card">
+      <div class="card-head"><div><h3>Decision threshold</h3><div class="sub">Probability at or above this value is labelled “likely to leave”. Changing it never retrains the model.</div></div></div>
+      <div class="threshold-box"><div style="display:flex;justify-content:space-between"><span class="label-text">Threshold</span><strong id="p-thr-val">0.50</strong></div>
+        <input type="range" id="p-thr" min="0.05" max="0.95" step="0.01" value="0.5" aria-label="Decision threshold">
+        <div style="margin-top:10px"><button class="btn sm" id="p-thr-save">Save as default</button></div></div>
+      <p class="help" style="font-size:.78rem;color:var(--text-3);margin:10px 0 0">Lower values catch more leavers but raise false alarms. See the trade-off chart on the Evaluation page.</p>
+    </section>
+  </aside>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/prediction.js') }}"></script>{% endblock %}

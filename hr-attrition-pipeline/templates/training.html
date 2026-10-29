@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h1>Model training</h1><p>Trains logistic regression, random forest and gradient boosting with stratified cross-validation on the 80% training split. The model is chosen by CV score only; the 20% test split is used once at the end.</p></div></div>
+<div class="grid g-main">
+  <section class="card">
+    <div class="card-head"><div><h2>Training settings</h2><div class="sub">Preprocessing is refitted inside every fold</div></div></div>
+    <div class="form-grid">
+      <div class="field"><label for="t-folds">Cross-validation folds: <strong id="t-folds-val">5</strong></label><input id="t-folds" type="range" min="2" max="10" value="5"><span class="help">StratifiedKFold, shuffled</span></div>
+      <div class="field"><label for="t-seed">Random seed</label><input id="t-seed" type="number" min="0" max="2147483647" value="42"><span class="field-error" id="t-seed-err"></span></div>
+      <div class="field"><label for="t-metric">Selection metric</label><select id="t-metric"><option value="average_precision">PR-AUC (average precision)</option><option value="roc_auc">ROC-AUC</option><option value="f1">F1-score</option><option value="balanced_accuracy">Balanced accuracy</option></select><span class="help">Chosen before seeing any test data</span></div>
+      <label class="switch" style="align-self:center"><input id="t-cw" type="checkbox" checked> Class weighting</label>
+      <label class="switch" style="align-self:center"><input id="t-tune" type="checkbox"> Hyperparameter tuning <span class="tip" tabindex="0" data-tip="Randomised search inside each outer fold (nested CV). Much slower, but the CV scores stay unbiased.">?</span></label>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;margin-top:20px;flex-wrap:wrap">
+      <button class="btn primary" id="t-start"><span class="spin"></span><i class="bi bi-play-fill lbl-icon"></i> Train models</button>
+      <span id="t-state" class="pill"><span class="dot"></span><span class="txt">Idle</span></span>
+    </div>
+    <div class="progress mt" id="t-bar"><span></span></div>
+  </section>
+  <section class="card"><div class="card-head"><h2>Training log</h2></div><div class="terminal" id="t-log" role="log" aria-live="polite"></div></section>
+</div>
+<div class="grid g-2 mt">
+  <section class="card"><div class="card-head"><div><h2>Cross-validation results</h2><div class="sub" id="t-cv-sub">Mean ± std over the folds</div></div></div><div id="t-cv"><div class="empty"><i class="bi bi-table"></i><h3>No results yet</h3><p>Train the models to see fold-wise scores.</p></div></div></section>
+  <section class="card"><div class="card-head"><div><h2>Model selection &amp; test summary</h2></div></div><div id="t-sel"><div class="empty"><i class="bi bi-trophy"></i><h3>Nothing selected yet</h3><p>The winner and its held-out test scores appear here.</p></div></div></section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/training.js') }}"></script>{% endblock %}

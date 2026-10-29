@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h1>Dataset explorer</h1><p>Browse, filter and profile the real IBM HR Analytics data. The <code>EmployeeNumber</code> identifier is never shown or exported.</p></div>
+  <a class="btn" id="download-btn" href="/api/dataset/download"><i class="bi bi-download"></i> Download filtered CSV</a></div>
+<div class="grid g-kpi" id="ds-kpis">
+  <div class="card kpi skeleton"><div class="label"><i class="bi bi-file-earmark-spreadsheet"></i>File</div><div class="value mono" style="font-size:1.05rem;word-break:break-all" id="ds-file">…</div><div class="hint" id="ds-source">&nbsp;</div></div>
+  <div class="card kpi cool skeleton"><div class="label"><i class="bi bi-list-ol"></i>Rows</div><div class="value" id="ds-rows">0</div><div class="hint">employee records</div></div>
+  <div class="card kpi cool skeleton"><div class="label"><i class="bi bi-layout-three-columns"></i>Columns</div><div class="value" id="ds-cols">0</div><div class="hint">including target</div></div>
+  <div class="card kpi green skeleton"><div class="label"><i class="bi bi-question-circle"></i>Missing values</div><div class="value" id="ds-missing">0</div><div class="hint">across all cells</div></div>
+  <div class="card kpi warm skeleton"><div class="label"><i class="bi bi-copy"></i>Duplicate rows</div><div class="value" id="ds-dups">0</div><div class="hint" id="ds-dups-hint">full-row duplicates</div></div>
+  <div class="card kpi warm skeleton"><div class="label"><i class="bi bi-pie-chart"></i>Target: Attrition</div><div class="value" id="ds-target">0</div><div class="hint" id="ds-target-hint">&nbsp;</div></div>
+</div>
+<div class="card">
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="table">Employees</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="columns">Columns &amp; types</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="stats">Statistics</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="charts">Column charts</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="dups">Duplicates</button>
+  </div>
+  <section data-panel="table">
+    <div class="toolbar">
+      <div class="field" style="flex:2 1 220px"><label for="f-search">Search</label><input id="f-search" type="search" placeholder="Search any value…"></div>
+      <div class="field"><label for="f-department">Department</label><select id="f-department"><option value="">All</option></select></div>
+      <div class="field"><label for="f-job_role">Job role</label><select id="f-job_role"><option value="">All</option></select></div>
+      <div class="field"><label for="f-gender">Gender</label><select id="f-gender"><option value="">All</option></select></div>
+      <div class="field"><label for="f-overtime">Overtime</label><select id="f-overtime"><option value="">All</option></select></div>
+      <div class="field"><label for="f-attrition">Attrition</label><select id="f-attrition"><option value="">All</option></select></div>
+      <div class="field"><label for="f-size">Rows per page</label><select id="f-size"><option>10</option><option selected>15</option><option>25</option><option>50</option><option>100</option></select></div>
+      <button class="btn" id="btn-reset"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+    </div>
+    <details class="mt" style="margin:0 0 14px"><summary class="label-text" style="cursor:pointer">Choose columns</summary><div id="col-picker" class="form-grid" style="margin-top:10px"></div></details>
+    <div class="table-wrap" id="table-wrap"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+    <div class="pager"><span id="pager-info"></span><span><button class="btn sm" id="pg-prev">Previous</button> <span id="pg-num" style="margin:0 8px"></span> <button class="btn sm" id="pg-next">Next</button></span></div>
+  </section>
+  <section data-panel="columns" hidden><div class="table-wrap"><table><thead><tr><th>Column</th><th>Type</th><th>Kind</th><th>Missing</th><th>Unique</th></tr></thead><tbody id="cols-body"></tbody></table></div></section>
+  <section data-panel="stats" hidden>
+    <h3>Numerical summary</h3><div class="table-wrap" style="margin:10px 0 20px"><table><thead><tr><th>Column</th><th>Count</th><th>Mean</th><th>Std</th><th>Min</th><th>25%</th><th>Median</th><th>75%</th><th>Max</th></tr></thead><tbody id="num-body"></tbody></table></div>
+    <h3>Categorical summary</h3><div class="table-wrap" style="margin-top:10px"><table><thead><tr><th>Column</th><th>Unique</th><th>Most frequent values (count)</th></tr></thead><tbody id="cat-body"></tbody></table></div>
+  </section>
+  <section data-panel="charts" hidden>
+    <div class="toolbar"><div class="field"><label for="cc-col">Column</label><select id="cc-col"></select></div></div>
+    <div class="chart-box tall"><canvas id="ch-col"></canvas></div>
+  </section>
+  <section data-panel="dups" hidden><div id="dups-box"></div></section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/dataset.js') }}"></script>{% endblock %}

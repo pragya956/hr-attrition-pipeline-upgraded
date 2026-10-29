@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h1>About this project</h1><p>HR Attrition Analytics — a stratified, leakage-free machine-learning pipeline with categorical encoding, built on the IBM HR Analytics Employee Attrition dataset.</p></div></div>
+<div class="grid g-2">
+  <section class="card prose"><h2>What it does</h2>
+    <p>The app downloads the real dataset with KaggleHub, explores it, trains three classifiers, compares them with stratified cross-validation, evaluates the winner once on a held-out test set and serves predictions through a Flask API.</p>
+    <h3>Pipeline</h3>
+    <ol><li><strong>Split.</strong> Stratified 80/20 train/test split (seed 42 by default). The test set is untouched until the end.</li>
+    <li><strong>Preprocess (inside the pipeline).</strong> Numeric: median imputation (+ scaling for logistic regression). Categorical: most-frequent imputation + <code>OneHotEncoder(handle_unknown="ignore")</code>.</li>
+    <li><strong>Cross-validate.</strong> <code>StratifiedKFold</code> (5 folds, shuffled, seeded) via <code>cross_validate</code>, so every encoder and imputer is refitted per fold.</li>
+    <li><strong>Select.</strong> The best model is the one with the highest mean CV score on a metric chosen up front (PR-AUC by default).</li>
+    <li><strong>Test once.</strong> The selected model is scored on the held-out set. The test set never influences selection or tuning.</li></ol>
+  </section>
+  <section class="card prose"><h2>Viva cheat-sheet</h2>
+    <details class="qa"><summary>Why stratified cross-validation?</summary><div>Only a minority of employees leave. Stratification keeps that ratio in every fold, so every fold has enough positives and scores are stable.</div></details>
+    <details class="qa"><summary>Where could data leak, and how is it avoided?</summary><div>Fitting an imputer, scaler or encoder on all rows would let validation data influence training. Here they live inside a scikit-learn <code>Pipeline</code>, so each fold fits them on its own training rows only.</div></details>
+    <details class="qa"><summary>Why not rely on accuracy?</summary><div>Predicting “stayed” for everyone scores high accuracy but finds no leavers. Recall, F1, balanced accuracy and PR-AUC measure the minority class directly.</div></details>
+    <details class="qa"><summary>How are unseen categories handled?</summary><div><code>handle_unknown="ignore"</code> encodes an unseen level as all zeros, so prediction never crashes. The UI shows a warning.</div></details>
+    <details class="qa"><summary>How is class imbalance addressed?</summary><div>Class weights (<code>balanced</code>) reweight the loss; no resampling is used, so validation and test data are never altered. The decision threshold can be tuned without retraining.</div></details>
+    <details class="qa"><summary>Does feature importance prove causes?</summary><div>No. It shows statistical association in historical data and can be shared between correlated features.</div></details>
+    <details class="qa"><summary>Excluded columns</summary><div><code>EmployeeNumber</code> (identifier), <code>EmployeeCount</code>, <code>Over18</code>, <code>StandardHours</code> (constants), plus any column constant in the training split.</div></details>
+  </section>
+</div>
+<section class="card glass mt"><h2>Responsible use</h2><p>Use this tool for aggregate workforce analysis and decision support. Predictions are probabilities from historical patterns and must not be used for employment, disciplinary or termination decisions about individual employees.</p></section>
+{% endblock %}

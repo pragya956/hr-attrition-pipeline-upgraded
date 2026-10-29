@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head">
+  <div><h1>Workforce overview</h1><p>Live figures computed from the IBM HR Analytics dataset and the trained pipeline. Nothing on this page is hardcoded.</p></div>
+  <a class="btn primary" href="/training"><i class="bi bi-cpu"></i> Train models</a>
+</div>
+<div class="grid g-kpi" id="kpis">
+  <div class="card kpi skeleton"><div class="label"><i class="bi bi-people"></i>Total employees</div><div class="value" id="kpi-total">0</div><div class="hint">records in dataset</div></div>
+  <div class="card kpi warm skeleton"><div class="label"><i class="bi bi-box-arrow-right"></i>Employees who left</div><div class="value" id="kpi-left">0</div><div class="hint">Attrition = Yes</div></div>
+  <div class="card kpi green skeleton"><div class="label"><i class="bi bi-person-check"></i>Employees who stayed</div><div class="value" id="kpi-stayed">0</div><div class="hint">Attrition = No</div></div>
+  <div class="card kpi warm skeleton"><div class="label"><i class="bi bi-percent"></i>Attrition rate</div><div class="value" id="kpi-rate">0</div><div class="hint">minority class</div></div>
+  <div class="card kpi cool skeleton"><div class="label"><i class="bi bi-diagram-3"></i>Dataset features</div><div class="value" id="kpi-features">0</div><div class="hint">columns excluding target</div></div>
+  <div class="card kpi skeleton"><div class="label"><i class="bi bi-graph-up-arrow"></i><span id="kpi-cv-label">Cross-validation</span></div><div class="value" id="kpi-cv">—</div><div class="hint" id="kpi-cv-hint">train a model to see this</div></div>
+</div>
+<div class="grid g-main">
+  <section class="card"><div class="card-head"><div><h2>Attrition by department</h2><div class="sub">Stacked counts; hover for the attrition rate</div></div></div><div class="chart-box"><canvas id="ch-dept"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Attrition distribution</h2><div class="sub">Class balance of the target</div></div></div><div class="chart-box"><canvas id="ch-dist"></canvas></div></section>
+</div>
+<div class="grid g-3 mt">
+  <section class="card"><div class="card-head"><div><h2>Job satisfaction</h2><div class="sub">Attrition rate by rating</div></div></div><div class="chart-box short"><canvas id="ch-sat"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Overtime vs attrition</h2><div class="sub">Attrition rate by overtime</div></div></div><div class="chart-box short"><canvas id="ch-ot"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Monthly income</h2><div class="sub">Mean and median, stayed vs left</div></div></div><div class="chart-box short"><canvas id="ch-income"></canvas></div></section>
+</div>
+<div class="grid g-2 mt">
+  <section class="card"><div class="card-head"><div><h2>Age and attrition</h2><div class="sub">Attrition rate by age group</div></div></div><div class="chart-box"><canvas id="ch-age"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Top model drivers</h2><div class="sub" id="fi-sub">Permutation importance on held-out data (association, not causation)</div></div><a class="btn sm" href="/feature-importance">Details</a></div><div class="chart-box" id="fi-box"><canvas id="ch-fi"></canvas></div></section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>{% endblock %}

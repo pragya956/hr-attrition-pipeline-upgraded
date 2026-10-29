@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head"><div><h1>Attrition insights</h1><p>How attrition varies across the workforce. Differences describe association in this dataset, not the cause of anyone's decision to leave.</p></div></div>
+<div class="card" style="margin-bottom:18px">
+  <div class="toolbar" style="margin:0">
+    <div class="field"><label for="a-department">Department</label><select id="a-department"><option value="">All</option></select></div>
+    <div class="field"><label for="a-overtime">Overtime</label><select id="a-overtime"><option value="">All</option></select></div>
+    <div class="field"><label for="a-gender">Gender</label><select id="a-gender"><option value="">All</option></select></div>
+    <button class="btn" id="a-reset"><i class="bi bi-arrow-counterclockwise"></i> Reset</button>
+    <div style="margin-left:auto" id="a-summary" class="pill"><span class="txt">Loading…</span></div>
+  </div>
+</div>
+<div id="a-empty" hidden></div>
+<div class="grid g-2" id="a-grid">
+  <section class="card"><div class="card-head"><div><h2>Department</h2><div class="sub">Counts and attrition rate</div></div></div><div class="chart-box"><canvas id="ac-dept"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Overtime</h2><div class="sub">Attrition rate by overtime status</div></div></div><div class="chart-box"><canvas id="ac-ot"></canvas></div></section>
+  <section class="card" style="grid-column:1/-1"><div class="card-head"><div><h2>Job role</h2><div class="sub">Sorted by attrition rate</div></div></div><div class="chart-box tall"><canvas id="ac-role"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Business travel</h2><div class="sub">Attrition rate</div></div></div><div class="chart-box"><canvas id="ac-travel"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Age group</h2><div class="sub">Attrition rate</div></div></div><div class="chart-box"><canvas id="ac-age"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Years at company</h2><div class="sub">Attrition rate by tenure</div></div></div><div class="chart-box"><canvas id="ac-years"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Monthly income band</h2><div class="sub">Attrition rate by pay</div></div></div><div class="chart-box"><canvas id="ac-income"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Job satisfaction</h2><div class="sub">1 = Low … 4 = Very High</div></div></div><div class="chart-box"><canvas id="ac-sat"></canvas></div></section>
+  <section class="card"><div class="card-head"><div><h2>Work-life balance</h2><div class="sub">1 = Bad … 4 = Best</div></div></div><div class="chart-box"><canvas id="ac-wlb"></canvas></div></section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/analytics.js') }}"></script>{% endblock %}
